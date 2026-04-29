@@ -1,0 +1,39 @@
+import { Categoria } from 'src/categoria/entities/categoria.entity';
+import { Incluye } from 'src/incluye/entities/incluye.entity';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+
+@Entity()
+export class Producto {
+    @PrimaryGeneratedColumn()
+    idProductor: number;
+    @Column()
+    nombre: string;
+    @Column()
+    descripcion: string;
+    @Column({ type: 'decimal', precision: 10, scale: 2 })
+    precio: number;
+    @Column()
+    stock: number;
+    @CreateDateColumn()
+    creadoEn: Date;
+    @UpdateDateColumn()
+    actualizadoEn: Date;
+    @DeleteDateColumn()
+    eliminadoEn: Date;
+    @ManyToOne(() => Categoria, (categoria)=> categoria.producto,{ nullable: true })
+    @JoinColumn({ name: "idCategoria" })
+    categoria: Categoria;
+    @OneToMany(() => Incluye, (incluye) => incluye.producto, { onDelete: "CASCADE"})
+    @JoinColumn({ name: "idOrdenProducto" })
+    incluye: Incluye[];
+}
