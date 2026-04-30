@@ -1,26 +1,66 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOrdenDto } from './dto/create-orden.dto';
 import { UpdateOrdenDto } from './dto/update-orden.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Orden } from './entities/orden.entity';
+import { Cliente } from 'src/cliente/entities/cliente.entity';
+import { Incluye } from 'src/incluye/entities/incluye.entity';
 
 @Injectable()
 export class OrdenService {
-  create(createOrdenDto: CreateOrdenDto) {
-    return 'This action adds a new orden';
+  constructor(
+    @InjectRepository(Orden)
+    private readonly repositoryOrden: Repository<Orden>,
+    @InjectRepository(Cliente)
+    private readonly repositoryCliente: Repository<Cliente>,
+    @InjectRepository(Incluye)
+    private readonly repositoryIncluye: Repository<Incluye>,
+  ) {}
+  async create(createOrdenDto: CreateOrdenDto) {
+    const cliente = await this.repositoryCliente.findOneBy({
+      idCliente: createOrdenDto.idCliente,
+    });
+    if (!cliente)
+      throw new NotFoundException(
+        `Cliente con id ${createOrdenDto.idCliente} no encontrado`,
+      );
+    const orden = this.repositoryOrden.create(createOrdenDto);
+    return this.repositoryOrden.save(orden);
   }
 
-  findAll() {
-    return `This action returns all orden`;
+  async findAll() {
+    return await this.repositoryOrden.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} orden`;
+  async findOne(id: number) {
+    return await this.repositoryOrden.findOneBy({
+      idOrden: id,
+    });
   }
 
-  update(id: number, updateOrdenDto: UpdateOrdenDto) {
-    return `This action updates a #${id} orden`;
+  async update(id: number, updateOrdenDto: UpdateOrdenDto) {
+    const orden = await this.repositoryOrden.preload({
+      idOrden: id,
+      ...updateOrdenDto,
+    });
+    if (!orden) throw new NotFoundException(`Orden con id ${id} no encontrada`);
+    if (updateOrdenDto.idCliente !== undefined) {
+      const cliente = await this.repositoryCliente.findOneBy({
+        idCliente: id,
+      });
+      if (!cliente)
+        throw new NotFoundException(`Cliente con id ${id} no encontrado`);
+    }
+    return await this.repositoryOrden.save(orden);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} orden`;
+  async remove(id: number) {
+    const orden = await this.findOne(id);
+    if (!orden) throw new NotFoundException(`Orden con id ${id} no encontrado`);
+    await this.repositoryIncluye.softDelete({
+      orden: { idOrden: id },
+    });
+    return await this.repositoryOrden.softRemove(orden);
   }
 }

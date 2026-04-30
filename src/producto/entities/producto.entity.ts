@@ -15,7 +15,7 @@ import {
 @Entity()
 export class Producto {
     @PrimaryGeneratedColumn()
-    idProductor: number;
+    idProducto: number;
     @Column()
     nombre: string;
     @Column()
@@ -32,7 +32,7 @@ export class Producto {
     eliminadoEn: Date;
     @ManyToOne(() => Categoria, (categoria)=> categoria.producto,{ nullable: true })
     @JoinColumn({ name: "idCategoria" })
-    categoria: Categoria;
+    categoria: (Categoria|null);
     @OneToMany(() => Incluye, (incluye) => incluye.producto, { onDelete: "CASCADE"})
     @JoinColumn({ name: "idOrdenProducto" })
     incluye: Incluye[];
