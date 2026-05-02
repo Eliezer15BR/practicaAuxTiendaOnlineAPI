@@ -32,7 +32,7 @@ $ npm install
 ```
 ## BD Setup
 The project was implemented in postgresql, steps:
-You have to create the database practica-aux
+You have to create the database practica_aux
 ```sql
 CREATE DATABASE practica-aux;
 ```
@@ -50,6 +50,13 @@ $ npm run start:dev
 # production mode
 $ npm run start:prod
 ```
+## Access to Scalar documentacion of the project
+When the project is running you have to access to http://localhost:3000/docs
+If you wanna change the port modify the following line
+``` ts
+await app.listen(process.env.PORT ?? 3000);
+```
+in src/main.ts
 
 ## Run tests
 
@@ -103,3 +110,76 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+# 📦 Proyecto NestJS
+
+## 🇪🇸 Español
+
+<p align="center">
+  <img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" />
+</p>
+
+### 📌 Descripción
+
+Este proyecto está desarrollado con NestJS, un framework progresivo de Node.js para construir aplicaciones backend eficientes y escalables.
+
+---
+
+### ⚙️ Instalación
+
+```bash
+npm install
+```
+
+---
+
+### 🗄️ Configuración de Base de Datos
+
+El proyecto fue implementado en postgresql, pasos:
+Crear la base de datos practica_aux
+
+```sql
+CREATE DATABASE practica_aux;
+```
+
+Configura el usuario de la base de datos y la contraseña
+
+---
+
+### 🚀 Ejecución
+
+```bash
+# desarrollo
+npm run start
+
+# desarrollo con hot reload
+npm run start:dev
+
+# producción
+npm run start:prod
+```
+
+---
+## Acceder a la documentación de Scalar del proyecto
+Cuando el proyecto este en ejecución acceder a http://localhost:3000/docs
+Si quieres cambiar el puerto modificar la siguiente línea
+``` ts
+await app.listen(process.env.PORT ?? 3000);
+```
+en src/main.ts
+---
+
+### 🧪 Tests
+
+```bash
+npm run test
+npm run test:e2e
+npm run test:cov
+```
+
+---
+
+### 📦 Despliegue
+
+Consulta la documentación oficial:
+https://docs.nestjs.com/deployment
