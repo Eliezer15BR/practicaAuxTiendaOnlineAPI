@@ -102,4 +102,18 @@ export class IncluyeService {
       );
     return await this.incluyeRepository.softRemove(incluye);
   }
+
+  async removeProducto(ordenId: number, productoId: number) {
+    const incluye = await this.incluyeRepository.findOne({
+      where: {
+        orden: { idOrden: ordenId },
+        producto: { idProducto: productoId },
+      },
+    });
+    if (!incluye)
+      throw new NotFoundException(
+        `Relacion incluye con idOrden ${ordenId} e idProducto ${productoId} no encontrado`,
+      );
+    return this.incluyeRepository.softRemove(incluye);
+  }
 }

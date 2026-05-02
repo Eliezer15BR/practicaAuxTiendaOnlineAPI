@@ -13,8 +13,8 @@ import { UpdateIncluyeDto } from './dto/update-incluye.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { Incluye } from './entities/incluye.entity';
 
-@ApiTags('Incluye')
-@Controller('incluye')
+@ApiTags('OrdenProducto (Incluye)')
+@Controller('orden_producto')
 export class IncluyeController {
   constructor(private readonly incluyeService: IncluyeService) {}
 
@@ -22,7 +22,7 @@ export class IncluyeController {
   @ApiOperation({ summary: 'Agregar un producto a una orden' })
   @ApiResponse({
     status: 201,
-    description: 'Relación creada correctamente',
+    description: 'Relación orden-producto creada correctamente',
     type: Incluye,
   })
   @ApiResponse({
@@ -46,7 +46,11 @@ export class IncluyeController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Obtener una relación por ID' })
-  @ApiParam({ name: 'id', example: 1 })
+  @ApiParam({
+    name: 'id',
+    description: 'ID de la relación incluye',
+    example: 1,
+  })
   @ApiResponse({
     status: 200,
     description: 'Relación encontrada',
@@ -62,7 +66,11 @@ export class IncluyeController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar una relación orden-producto' })
-  @ApiParam({ name: 'id', example: 1 })
+  @ApiParam({
+    name: 'id',
+    description: 'ID de la relación incluye',
+    example: 1,
+  })
   @ApiResponse({
     status: 200,
     description: 'Relación actualizada correctamente',
@@ -77,8 +85,12 @@ export class IncluyeController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Eliminar una relación (soft delete)' })
-  @ApiParam({ name: 'id', example: 1 })
+  @ApiOperation({ summary: 'Eliminar una relación por ID (soft delete)' })
+  @ApiParam({
+    name: 'id',
+    description: 'ID de la relación incluye',
+    example: 1,
+  })
   @ApiResponse({
     status: 200,
     description: 'Relación eliminada correctamente',
@@ -89,5 +101,34 @@ export class IncluyeController {
   })
   remove(@Param('id') id: string) {
     return this.incluyeService.remove(+id);
+  }
+
+  @Delete(':ordenId/producto/:productoId')
+  @ApiOperation({
+    summary: 'Eliminar un producto específico de una orden (soft delete)',
+  })
+  @ApiParam({
+    name: 'ordenId',
+    description: 'ID de la orden',
+    example: 1,
+  })
+  @ApiParam({
+    name: 'productoId',
+    description: 'ID del producto',
+    example: 5,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Relación orden-producto eliminada correctamente',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Relación no encontrada',
+  })
+  removeProducto(
+    @Param('ordenId') ordenId: string,
+    @Param('productoId') productoId: string,
+  ) {
+    return this.incluyeService.removeProducto(+ordenId, +productoId);
   }
 }
