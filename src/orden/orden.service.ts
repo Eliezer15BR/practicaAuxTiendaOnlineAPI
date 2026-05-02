@@ -58,7 +58,7 @@ export class OrdenService {
     if (!orden) throw new NotFoundException(`Orden con id ${id} no encontrada`);
     if (updateOrdenDto.idCliente !== undefined) {
       const cliente = await this.repositoryCliente.findOneBy({
-        idCliente: id,
+        idCliente: idCliente,
       });
       if (!cliente)
         throw new NotFoundException(`Cliente con id ${id} no encontrado`);

@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Categoria } from 'src/categoria/entities/categoria.entity';
 import { Incluye } from 'src/incluye/entities/incluye.entity';
 import {
@@ -14,25 +15,47 @@ import {
 
 @Entity()
 export class Producto {
-    @PrimaryGeneratedColumn()
-    idProducto: number;
-    @Column()
-    nombre: string;
-    @Column()
-    descripcion: string;
-    @Column({ type: 'decimal', precision: 10, scale: 2 })
-    precio: number;
-    @Column()
-    stock: number;
-    @CreateDateColumn()
-    creadoEn: Date;
-    @UpdateDateColumn()
-    actualizadoEn: Date;
-    @DeleteDateColumn()
-    eliminadoEn: Date;
-    @ManyToOne(() => Categoria, (categoria)=> categoria.producto, {onDelete: "CASCADE", nullable:false})
-    @JoinColumn({ name: "idCategoria" })
-    categoria: Categoria;
-    @OneToMany(() => Incluye, (incluye) => incluye.producto)
-    incluye: Incluye[];
+  @ApiProperty({ example: 1 })
+  @PrimaryGeneratedColumn()
+  idProducto: number;
+
+  @ApiProperty({ example: 'Laptop' })
+  @Column()
+  nombre: string;
+
+  @ApiProperty({ example: 'Laptop gamer', maxLength: 50 })
+  @Column()
+  descripcion: string;
+
+  @ApiProperty({ example: 1500.5 })
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  precio: number;
+
+  @ApiProperty({ example: 10 })
+  @Column()
+  stock: number;
+
+  @ApiProperty()
+  @CreateDateColumn()
+  creadoEn: Date;
+
+  @ApiProperty()
+  @UpdateDateColumn()
+  actualizadoEn: Date;
+
+  @ApiProperty({ required: false, nullable: true })
+  @DeleteDateColumn()
+  eliminadoEn: Date;
+
+  @ApiProperty({ type: () => Categoria })
+  @ManyToOne(() => Categoria, (categoria) => categoria.producto, {
+    onDelete: 'CASCADE',
+    nullable: false,
+  })
+  @JoinColumn({ name: 'idCategoria' })
+  categoria: Categoria;
+
+  @ApiProperty({ type: () => [Incluye] })
+  @OneToMany(() => Incluye, (incluye) => incluye.producto)
+  incluye: Incluye[];
 }

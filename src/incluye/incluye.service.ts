@@ -76,7 +76,18 @@ export class IncluyeService {
         idProducto: updateIncluyeDto.idProducto,
       });
       if (!producto)
-        throw new NotFoundException(`Producto con id ${id} no encontrado`);
+        throw new NotFoundException(
+          `Producto con id ${updateIncluyeDto.idProducto} no encontrado`,
+        );
+    }
+    if (updateIncluyeDto.idOrden !== undefined) {
+      const orden = await this.ordenRepository.findOneBy({
+        idOrden: updateIncluyeDto.idOrden,
+      });
+      if (!orden)
+        throw new NotFoundException(
+          `Orden con id ${updateIncluyeDto.idProducto} no encontrado`,
+        );
     }
     return await this.incluyeRepository.save(incluye);
   }
