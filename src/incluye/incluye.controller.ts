@@ -45,15 +45,18 @@ export class IncluyeController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Obtener una relación por ID' })
+  @ApiOperation({
+    summary:
+      'Obtener una relación orden-producto por ID (incluye el producto relacionado)',
+  })
   @ApiParam({
     name: 'id',
-    description: 'ID de la relación incluye',
+    description: 'ID de la relación incluye (orden_producto)',
     example: 1,
   })
   @ApiResponse({
     status: 200,
-    description: 'Relación encontrada',
+    description: 'Relación encontrada con su producto asociado',
     type: Incluye,
   })
   @ApiResponse({

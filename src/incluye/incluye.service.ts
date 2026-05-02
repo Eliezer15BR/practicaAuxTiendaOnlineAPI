@@ -50,8 +50,9 @@ export class IncluyeService {
     });
     if (!incluye)
       throw new NotFoundException(`Incluye con id ${id} no encontrado`);
-    return await this.incluyeRepository.findOneBy({
-      idOrdenProducto: id,
+    return await this.incluyeRepository.findOne({
+      where: { idOrdenProducto: id },
+      relations: ['producto'],
     });
   }
 
