@@ -52,11 +52,10 @@ $ npm run start:prod
 ```
 ## Access to Scalar documentacion of the project
 When the project is running you have to access to http://localhost:3000/docs
-If you wanna change the port modify the following line
+If you wanna change the port modify the following line in src/main.ts
 ``` ts
 await app.listen(process.env.PORT ?? 3000);
 ```
-in src/main.ts
 
 ## Run tests
 
@@ -162,11 +161,11 @@ npm run start:prod
 ---
 ## Acceder a la documentación de Scalar del proyecto
 Cuando el proyecto este en ejecución acceder a http://localhost:3000/docs
-Si quieres cambiar el puerto modificar la siguiente línea
+Si quieres cambiar el puerto modificar la siguiente línea en src/main.ts
 ``` ts
 await app.listen(process.env.PORT ?? 3000);
 ```
-en src/main.ts
+
 ---
 
 ### 🧪 Tests
