@@ -30,6 +30,13 @@
 ```bash
 $ npm install
 ```
+## BD Setup
+The project was implemented in postgresql, steps:
+You have to create the database practica-aux
+```sql
+CREATE DATABASE practica-aux;
+```
+And you have to setup the the user of database and the password
 
 ## Compile and run the project
 
