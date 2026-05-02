@@ -37,6 +37,9 @@ export class OrdenService {
   }
 
   async findOne(id: number) {
+    const orden = await this.repositoryOrden.findOneBy({ idOrden: id });
+    if (!orden)
+      throw new NotFoundException(`Orden con el id ${id} no encontrado`);
     return await this.repositoryOrden.findOne({
       where: { idOrden: id },
       relations: ['incluye', 'incluye.producto'],
@@ -64,7 +67,7 @@ export class OrdenService {
   }
 
   async remove(id: number) {
-    const orden = await this.findOne(id);
+    const orden = await this.repositoryOrden.findOneBy({ idOrden: id });
     if (!orden) throw new NotFoundException(`Orden con id ${id} no encontrado`);
     await this.repositoryIncluye.softDelete({
       orden: { idOrden: id },

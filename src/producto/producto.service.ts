@@ -37,6 +37,11 @@ export class ProductoService {
   }
 
   async findOne(id: number) {
+    const producto = await this.productoRepository.findOneBy({
+      idProducto: id,
+    });
+    if (!producto)
+      throw new NotFoundException(`Producto con el id ${id} no encontrado`);
     return await this.productoRepository.findOne({
       where: { idProducto: id },
       relations: ['categoria'],
@@ -68,7 +73,9 @@ export class ProductoService {
   }
 
   async remove(id: number) {
-    const producto = await this.findOne(id);
+    const producto = await this.productoRepository.findOneBy({
+      idProducto: id,
+    });
     if (!producto)
       throw new NotFoundException(`Producto con el id ${id} no encontrado`);
     await this.incluyeRepository.softDelete({ producto: { idProducto: id } });

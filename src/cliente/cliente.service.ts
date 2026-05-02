@@ -26,7 +26,10 @@ export class ClienteService {
   }
 
   async findOne(id: number) {
-    return await this.clienteRepository.findOneBy({ idCliente: id });
+    const cliente = await this.clienteRepository.findOneBy({ idCliente: id });
+    if (!cliente)
+      throw new NotFoundException(`Cliente con id ${id} no encontrado`);
+    return cliente;
   }
 
   async update(id: number, updateClienteDto: UpdateClienteDto) {
@@ -40,7 +43,7 @@ export class ClienteService {
   }
 
   async remove(id: number) {
-    const cliente = await this.findOne(id);
+    const cliente = await this.clienteRepository.findOneBy({ idCliente: id });
     if (!cliente)
       throw new NotFoundException(`Cliente con id ${id} no encontrado`);
     const ordenes = await this.ordenRepository.findBy({

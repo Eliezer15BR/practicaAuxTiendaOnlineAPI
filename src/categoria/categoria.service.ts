@@ -26,6 +26,11 @@ export class CategoriaService {
   }
 
   async findOne(id: number) {
+    const categoria = await this.categoriaRepository.findOneBy({
+      idCategoria: id,
+    });
+    if (!categoria)
+      throw new NotFoundException(`Categoria con el id ${id} no encontrado`);
     return await this.categoriaRepository.findOne({
       where: { idCategoria: id },
       relations: ['producto'],
@@ -43,7 +48,9 @@ export class CategoriaService {
   }
 
   async remove(id: number) {
-    const categoria = await this.findOne(id);
+    const categoria = await this.categoriaRepository.findOneBy({
+      idCategoria: id,
+    });
     if (!categoria)
       throw new NotFoundException(`Categoria con id ${id} no encontrada`);
     const productos = await this.productoRepository.findBy({

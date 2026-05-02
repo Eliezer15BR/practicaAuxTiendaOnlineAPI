@@ -45,6 +45,11 @@ export class IncluyeService {
   }
 
   async findOne(id: number) {
+    const incluye = await this.incluyeRepository.findOneBy({
+      idOrdenProducto: id,
+    });
+    if (!incluye)
+      throw new NotFoundException(`Incluye con id ${id} no encontrado`);
     return await this.incluyeRepository.findOneBy({
       idOrdenProducto: id,
     });
@@ -77,7 +82,9 @@ export class IncluyeService {
   }
 
   async remove(id: number) {
-    const incluye = await this.findOne(id);
+    const incluye = await this.incluyeRepository.findOneBy({
+      idOrdenProducto: id,
+    });
     if (!incluye)
       throw new NotFoundException(
         `Relacion Incluye con id ${id} no encontrada`,
