@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Cliente } from './entities/cliente.entity';
 import { Orden } from 'src/orden/entities/orden.entity';
+import { OrdenService } from 'src/orden/orden.service';
 
 @Injectable()
 export class ClienteService {
@@ -13,6 +14,7 @@ export class ClienteService {
     private readonly clienteRepository: Repository<Cliente>,
     @InjectRepository(Orden)
     private readonly ordenRepository: Repository<Orden>,
+    private ordenService: OrdenService,
   ) {}
   async create(createClienteDto: CreateClienteDto) {
     const cliente = this.clienteRepository.create(createClienteDto);
@@ -41,9 +43,12 @@ export class ClienteService {
     const cliente = await this.findOne(id);
     if (!cliente)
       throw new NotFoundException(`Cliente con id ${id} no encontrado`);
-    await this.ordenRepository.softDelete({
+    const ordenes = await this.ordenRepository.findBy({
       cliente: { idCliente: id },
     });
+    for (const orden of ordenes) {
+      await this.ordenService.remove(orden.idOrden);
+    }
     return await this.clienteRepository.softRemove(cliente);
   }
 }

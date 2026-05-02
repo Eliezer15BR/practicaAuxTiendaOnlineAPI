@@ -26,7 +26,7 @@ export class Cliente {
     actualizadoEn: Date;
     @DeleteDateColumn()
     eliminadoEn: Date;
-    @OneToMany(() => Orden, (orden) => orden.cliente, { onDelete: "CASCADE" })
+    @OneToMany(() => Orden, (orden) => orden.cliente)
     orden: Orden[]
 
 }

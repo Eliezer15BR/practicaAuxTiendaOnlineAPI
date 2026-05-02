@@ -26,11 +26,10 @@ export class Orden {
     actualizadoEn: Date;
     @DeleteDateColumn()
     eliminadoEn: Date;
-    @ManyToOne(() => Cliente, (cliente) => cliente.orden)
+    @ManyToOne(() => Cliente, (cliente) => cliente.orden, {nullable:false, onDelete:"CASCADE"})
     @JoinColumn({ name: "idCliente" })
     cliente: Cliente;
-    @OneToMany(() => Incluye, (incluye) => incluye.orden, { onDelete: "CASCADE" })
-    @JoinColumn({ name: "idOrdenProducto" })
-    incluye: Incluye;
+    @OneToMany(() => Incluye, (incluye) => incluye.orden)
+    incluye: Incluye[];
 
 }

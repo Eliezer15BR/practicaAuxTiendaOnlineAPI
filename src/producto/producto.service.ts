@@ -25,7 +25,10 @@ export class ProductoService {
       throw new NotFoundException(
         `Categoria con id ${createProductoDto.idCategoria} no encontrado`,
       );
-    const producto = this.productoRepository.create(createProductoDto);
+    const producto = this.productoRepository.create({
+      categoria: { idCategoria: createProductoDto.idCategoria },
+      ...createProductoDto,
+    });
     return await this.productoRepository.save(producto);
   }
 
@@ -34,19 +37,23 @@ export class ProductoService {
   }
 
   async findOne(id: number) {
-    return await this.productoRepository.findOneBy({
-      idProducto: id,
+    return await this.productoRepository.findOne({
+      where: { idProducto: id },
+      relations: ['categoria'],
     });
   }
 
   async update(id: number, updateProductoDto: UpdateProductoDto) {
+    const { idCategoria, ...rest } = updateProductoDto;
     const producto = await this.productoRepository.preload({
       idProducto: id,
-      ...updateProductoDto,
+      ...rest,
+      ...(idCategoria !== undefined && {
+        categoria: { idCategoria: idCategoria },
+      }),
     });
     if (!producto)
       throw new NotFoundException(`Producto con ${id} no encontrado`);
-    const idCategoria = updateProductoDto.idCategoria;
     if (idCategoria !== undefined) {
       //Para evitar la doble query
       const categoria = await this.categoriaRepository.findOneBy({
@@ -64,9 +71,7 @@ export class ProductoService {
     const producto = await this.findOne(id);
     if (!producto)
       throw new NotFoundException(`Producto con el id ${id} no encontrado`);
-    await this.incluyeRepository.softDelete({
-      producto: { idProducto: id },
-    });
+    await this.incluyeRepository.softDelete({ producto: { idProducto: id } });
     return this.productoRepository.softRemove(producto);
   }
 }

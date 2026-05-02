@@ -30,10 +30,9 @@ export class Producto {
     actualizadoEn: Date;
     @DeleteDateColumn()
     eliminadoEn: Date;
-    @ManyToOne(() => Categoria, (categoria)=> categoria.producto,{ nullable: true })
+    @ManyToOne(() => Categoria, (categoria)=> categoria.producto, {onDelete: "CASCADE", nullable:false})
     @JoinColumn({ name: "idCategoria" })
-    categoria: (Categoria|null);
-    @OneToMany(() => Incluye, (incluye) => incluye.producto, { onDelete: "CASCADE"})
-    @JoinColumn({ name: "idOrdenProducto" })
+    categoria: Categoria;
+    @OneToMany(() => Incluye, (incluye) => incluye.producto)
     incluye: Incluye[];
 }

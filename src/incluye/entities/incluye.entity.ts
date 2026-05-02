@@ -25,10 +25,10 @@ export class Incluye {
     actualizadoEn: Date;
     @DeleteDateColumn()
     eliminadoEn: Date;
-    @ManyToOne(() => Producto, (producto) => producto.incluye)
+    @ManyToOne(() => Producto, (producto) => producto.incluye, { nullable: false })
     @JoinColumn({ name: "idProducto" })
     producto: Producto;
-    @ManyToOne(() => Orden, (orden) => orden.incluye)
+    @ManyToOne(() => Orden, (orden) => orden.incluye, { nullable: false })
     @JoinColumn({ name: "idOrden" })
     orden: Orden;
 }

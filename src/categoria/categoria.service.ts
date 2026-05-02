@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Categoria } from './entities/categoria.entity';
 import { Repository } from 'typeorm';
 import { Producto } from 'src/producto/entities/producto.entity';
+import { ProductoService } from 'src/producto/producto.service';
 
 @Injectable()
 export class CategoriaService {
@@ -13,6 +14,7 @@ export class CategoriaService {
     private readonly categoriaRepository: Repository<Categoria>,
     @InjectRepository(Producto)
     private readonly productoRepository: Repository<Producto>,
+    private productoService: ProductoService,
   ) {}
   async create(createCategoriaDto: CreateCategoriaDto) {
     const producto = this.categoriaRepository.create(createCategoriaDto);
@@ -24,7 +26,10 @@ export class CategoriaService {
   }
 
   async findOne(id: number) {
-    return await this.categoriaRepository.findOneBy({ idCategoria: id });
+    return await this.categoriaRepository.findOne({
+      where: { idCategoria: id },
+      relations: ['producto'],
+    });
   }
 
   async update(id: number, updateCategoriaDto: UpdateCategoriaDto) {
@@ -41,10 +46,12 @@ export class CategoriaService {
     const categoria = await this.findOne(id);
     if (!categoria)
       throw new NotFoundException(`Categoria con id ${id} no encontrada`);
-    await this.productoRepository.update(
-      { categoria: { idCategoria: id } },
-      { categoria: null },
-    );
-    return await this.categoriaRepository.softDelete(id);
+    const productos = await this.productoRepository.findBy({
+      categoria: { idCategoria: id },
+    });
+    for (const producto of productos) {
+      await this.productoService.remove(producto.idProducto);
+    }
+    return await this.categoriaRepository.softRemove(categoria);
   }
 }

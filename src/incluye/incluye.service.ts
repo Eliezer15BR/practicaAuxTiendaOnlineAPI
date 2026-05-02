@@ -32,7 +32,11 @@ export class IncluyeService {
       throw new NotFoundException(
         `Orden con el id ${createIncluyeDto.idOrden} no encontrado`,
       );
-    const incluye = this.incluyeRepository.create(createIncluyeDto);
+    const incluye = this.incluyeRepository.create({
+      ...createIncluyeDto,
+      orden: { idOrden: createIncluyeDto.idOrden },
+      producto: { idProducto: createIncluyeDto.idProducto },
+    });
     return this.incluyeRepository.save(incluye);
   }
 
@@ -47,9 +51,16 @@ export class IncluyeService {
   }
 
   async update(id: number, updateIncluyeDto: UpdateIncluyeDto) {
+    const { idOrden, idProducto, ...rest } = updateIncluyeDto;
     const incluye = await this.incluyeRepository.preload({
       idOrdenProducto: id,
-      ...updateIncluyeDto,
+      ...rest,
+      ...(idOrden !== undefined && {
+        orden: { idOrden: idOrden },
+      }),
+      ...(idProducto !== undefined && {
+        producto: { idProducto: idProducto },
+      }),
     });
     if (!incluye)
       throw new NotFoundException(

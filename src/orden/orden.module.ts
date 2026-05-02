@@ -10,5 +10,6 @@ import { Incluye } from 'src/incluye/entities/incluye.entity';
   imports: [TypeOrmModule.forFeature([Orden, Cliente, Incluye])],
   controllers: [OrdenController],
   providers: [OrdenService],
+  exports: [OrdenService],
 })
 export class OrdenModule {}

@@ -25,6 +25,5 @@ export class Categoria {
     @DeleteDateColumn()
     eliminadoEn: Date;
     @OneToMany(() => Producto, (producto) => producto.categoria, { onDelete: "SET NULL" })
-    @JoinColumn({ name: "idProducto" })
     producto: Producto[]
 }

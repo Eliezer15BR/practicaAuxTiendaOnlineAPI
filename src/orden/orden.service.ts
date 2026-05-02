@@ -25,7 +25,10 @@ export class OrdenService {
       throw new NotFoundException(
         `Cliente con id ${createOrdenDto.idCliente} no encontrado`,
       );
-    const orden = this.repositoryOrden.create(createOrdenDto);
+    const orden = this.repositoryOrden.create({
+      cliente: { idCliente: createOrdenDto.idCliente },
+      ...createOrdenDto,
+    });
     return this.repositoryOrden.save(orden);
   }
 
@@ -34,15 +37,20 @@ export class OrdenService {
   }
 
   async findOne(id: number) {
-    return await this.repositoryOrden.findOneBy({
-      idOrden: id,
+    return await this.repositoryOrden.findOne({
+      where: { idOrden: id },
+      relations: ['incluye', 'incluye.producto'],
     });
   }
 
   async update(id: number, updateOrdenDto: UpdateOrdenDto) {
+    const { idCliente, ...rest } = updateOrdenDto;
     const orden = await this.repositoryOrden.preload({
       idOrden: id,
-      ...updateOrdenDto,
+      ...rest,
+      ...(idCliente !== undefined && {
+        cliente: { idCliente: idCliente },
+      }),
     });
     if (!orden) throw new NotFoundException(`Orden con id ${id} no encontrada`);
     if (updateOrdenDto.idCliente !== undefined) {
